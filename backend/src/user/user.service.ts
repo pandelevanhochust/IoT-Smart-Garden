@@ -104,7 +104,7 @@ export class UserService {
 
 // profile 
 
-// GET /api/user/profile
+// GET /api/profile
   async getAllProfile(): Promise<Profile[]> {
     const profiles = await this.prisma.profile.findMany({
       include: { user: true },
@@ -112,7 +112,7 @@ export class UserService {
     return profiles;
   }
 
-  // GET /api/user/profile/:id
+  // GET /api/profile/:id
   async getIndexProfile(id: number): Promise<Profile> {
     const userWithProfile = await this.prisma.profile.findUnique({
       where: { userId: id },
@@ -125,12 +125,12 @@ export class UserService {
     return userWithProfile;
   }
 
-  // POST /api/user/profile/:id
+  // POST /api/profile/:id
   async createProfile(userId: number, profileData: ProfileDto): Promise<{ msg: string; profile: Profile }> {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${userId} exists`);
     }
 
     const created = await this.prisma.profile.create({
@@ -146,7 +146,7 @@ export class UserService {
     };
   }
 
-  // PUT /api/user/profile/:id
+  // PUT /api/profile/:id
   async updateProfile(userId: number, profileData: ProfileDto): Promise<{ msg: string; profile: Profile }> {
     const profile = await this.prisma.profile.findUnique({
       where: { userId },
@@ -167,7 +167,7 @@ export class UserService {
     };
   }
 
-  // DELETE /api/user/profile/:id
+  // DELETE /api/profile/:id
   async deleteProfile(userId: number): Promise<{ msg: string }> {
     const profile = await this.prisma.profile.findUnique({
       where: { userId },
@@ -191,6 +191,7 @@ export class UserService {
   async createUserWithProfile(
     userData: Omit<User, 'id'> & { bio?: string | null; avatar?: string | null }
   ): Promise<User & { profile: Profile | null }> {
+    console.log("Passing User Data",userData);
     const { bio = null, avatar = null, ...user } = userData;
 
     const createdUser = await this.prisma.user.create({
@@ -207,5 +208,4 @@ export class UserService {
 
     return createdUser;
   }
-
 }

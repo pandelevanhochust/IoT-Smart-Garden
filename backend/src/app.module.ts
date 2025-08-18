@@ -15,7 +15,7 @@ import { UserModule } from './user/user.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer){
     consumer.apply(LoggerMiddleware)
-            .forRoutes({path:'api/staff', method: RequestMethod.ALL});
+            .forRoutes({path:'api/user', method: RequestMethod.ALL});
             // .forRoutes(StaffController)
   }
 }

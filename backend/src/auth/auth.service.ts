@@ -40,7 +40,7 @@ export class AuthService {
         }
 
         const hashedPassword = await bcrypt.hash(user.password, 10);
-        const newUser = await this.userService.createUser({
+        const newUser = await this.userService.createUserWithProfile({
             ...user,
             hashedPassword: hashedPassword,
         });
