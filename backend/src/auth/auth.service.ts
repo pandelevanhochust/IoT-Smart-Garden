@@ -8,13 +8,19 @@ import { RegisterDto } from '../dto/RegisterDto';
 export class AuthService {
     constructor(private userService: UserService,private jwtService: JwtService) {}
 
+    async validateUsernamePassword(username: string, pass: string ): Promise<boolean>{
+        const user = await this.userService.findUserbyUsername(username);
+        const passwordMatch = await bcrypt.compare(pass, user.hashedPassword);
+        if (!passwordMatch) throw new UnauthorizedException('Wrong password');
+        const { hashedPassword, ...result } = user;
+        return user; 
+    }
+
     async login(username: string, pass: string) {
         const user = await this.userService.findUserbyUsername(username);
         if (!user) throw new UnauthorizedException('User not found');
 
         const hashedpasswordMatch = await bcrypt.compare(pass,user.hashedPassword);
-        const passwordMatch = user.password === pass;
-
         if(!(hashedpasswordMatch)){
             throw new UnauthorizedException('Wrong password');
         }
