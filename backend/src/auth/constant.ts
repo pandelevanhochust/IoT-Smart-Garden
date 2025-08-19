@@ -1,3 +1,1 @@
-
-export const jwtConst = "shikenger";
-
+export const jwtConst: string = process.env.SECRET ?? "shinkenger"

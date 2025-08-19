@@ -33,5 +33,4 @@ export class ProfileController {
     async deleteProfile(@Param('id', ParseIntPipe) id: number): Promise<object> {
         return this.userService.deleteProfile(id);
     }
- 
 }

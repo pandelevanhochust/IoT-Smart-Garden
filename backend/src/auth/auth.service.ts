@@ -6,7 +6,8 @@ import { RegisterDto } from '../dto/RegisterDto';
 
 @Injectable()
 export class AuthService {
-    constructor(private userService: UserService,private jwtService: JwtService) {}
+    constructor(private readonly userService: UserService,
+                private readonly jwtService: JwtService) {}
 
     async validateUsernamePassword(username: string, pass: string ): Promise<boolean>{
         const user = await this.userService.findUserbyUsername(username);

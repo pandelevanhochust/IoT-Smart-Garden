@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@nestjs/config": "^4.0.2",
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^11.0.5",
     "class-validator": "^0.14.2",
