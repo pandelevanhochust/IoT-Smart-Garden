@@ -1,19 +1,29 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, Request } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { RegisterDto } from 'src/dto/RegisterDto';
 import { UserDto } from '../dto/user.dto';
 import { UserService } from './user.service';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { JwtAuthGuard } from 'src/auth/passport/jwt-strategy/jwt-auth.guard';
+import { JsonObject } from '@prisma/client/runtime/library';
+import { LocalAuthGuard } from 'src/auth/passport/local-strategy/local-auth.guard';
 
 @Controller('api/user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
     
     //User
+    @UseGuards(JwtAuthGuard)
     @Get('hello')
-    async staffgreed(): Promise<string> {
-        return 'Hello how low';
+    async staffGreet(@Request() req): Promise<{ user: any }> {
+        console.log(req);
+        return {
+        user: req.user, 
+        };
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
     async listAllUser(): Promise<User[]> {
         return (this.userService.listAllUser());
