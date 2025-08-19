@@ -1,20 +1,32 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Request, Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { LoginDto } from '../dto/LoginDto';
 import { RegisterDto } from '../dto/RegisterDto';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './passport/jwt-strategy/jwt-auth.guard';
+import { LocalAuthGuard } from './passport/local-strategy/local-auth.guard';
+import { User } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+  
+  @UseGuards(LocalAuthGuard)
+  @Post('check')
+  async check(@Request() req){
+    return req.user
+   }
 
+  @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  logIn(@Body() loginDto: LoginDto): Promise<object> {
-    return this.authService.login(loginDto.username, loginDto.password);
+  async logIn(@Request() request): Promise<object> {
+    console.log("In controller\n",request.user);
+    return this.authService.login(request.user.username,request.user.password);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('register')
-  register(@Body() userData: RegisterDto): Promise<object> {
+  async register(@Body() userData: RegisterDto): Promise<object> {
     return this.authService.register(userData);
   }
 }
