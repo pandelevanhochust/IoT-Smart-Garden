@@ -17,6 +17,9 @@ export class RegisterDto {
   @IsString()
   hashedPassword: string;
 
+  @IsString()
+  role: string;
+
   @IsOptional()
   @IsString()
   bio?: string;
