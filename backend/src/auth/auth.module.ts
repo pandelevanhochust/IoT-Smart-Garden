@@ -14,7 +14,7 @@ import { LocalStrategy } from './passport/local-strategy/local.strategy';
               global: true,
               secret: process.env.SECRET,
               signOptions: {
-                  expiresIn: '30s',
+                  expiresIn: '1d',
               }
             })],
   controllers: [AuthController],
