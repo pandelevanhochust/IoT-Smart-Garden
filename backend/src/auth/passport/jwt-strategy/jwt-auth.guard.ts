@@ -1,8 +1,8 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { PUBLIC_KEY } from 'src/auth/guard/roles.decorator';
 import { lastValueFrom } from 'rxjs';
+import { PUBLIC_KEY } from 'src/auth/guard/roles.decorator';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -16,7 +16,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
             context.getClass(),
         ]);
 
-        if(isPublic) return false; 
+        if(isPublic) return true; 
         
         const result = super.canActivate(context);
         if (result instanceof Promise) {
