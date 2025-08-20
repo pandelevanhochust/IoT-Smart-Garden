@@ -15,10 +15,10 @@ export class JwtStrategy extends PassportStrategy(Strategy,'jwt') {
   }
 
   //put this into request['user']
-  async validate(payload: { username: string, email: string }): Promise<{ username: string,email: string  }> {
+  async validate(payload: { username: string; email: string; role: string }): Promise<{ username: string; email: string; role: string }> {
     return { username: payload.username,
-             email: payload.email
+             email: payload.email,
+             role: payload.role
      };
   }
-
 }
