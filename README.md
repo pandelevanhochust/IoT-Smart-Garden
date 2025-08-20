@@ -1,6 +1,8 @@
 # NestJS Internship
 
-
+###
+DATABASE_URL="postgresql://postgres:12345@localhost:5432/postgres"
+SECRET = "shikenger"
 
 ## Getting started
 
