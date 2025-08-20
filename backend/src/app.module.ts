@@ -7,12 +7,32 @@ import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/passport/jwt-strategy/jwt-auth.guard';
+import { LocalAuthGuard } from './auth/passport/local-strategy/local-auth.guard';
+import { RolesGuard } from './auth/guard/roles.guard';
 
 @Module({
-  imports: [UserModule, AuthModule, PostModule, PrismaModule, ConfigModule.forRoot({isGlobal: true})],
+  imports: [      
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    
+    UserModule, AuthModule, PostModule, PrismaModule],
+
   controllers: [AppController],
-  providers: [AppService],
-})
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard, 
+    },
+    AppService],
+    })
+
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer){
     consumer.apply(LoggerMiddleware)
