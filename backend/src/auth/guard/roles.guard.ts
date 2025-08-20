@@ -1,22 +1,34 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLES_KEY } from './roles.decorator';
+import { PUBLIC_KEY, ROLES_KEY } from './roles.decorator';
+import { Role } from './role.enum';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
-  canActivate(ctx: ExecutionContext): boolean {
-    const required = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
-      ctx.getHandler(),
-      ctx.getClass(),
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ])
+
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+      context.getHandler(),
+      context.getClass(),
     ]);
-    if (!required || required.length === 0) return true;
+    // console.log("In role guard\n",requiredRoles);
+    // console.log("In context\n",context);
 
-    const req = ctx.switchToHttp().getRequest();
-    const role: string | undefined = req.user?.role;
-    if (!role) return false;
+    if(isPublic) return true;
+    
+    console.log("In context\n",context.getClass());
+    if (!requiredRoles || requiredRoles.length === 0) return true;
 
-    return required.includes(role);
+    const req = context.switchToHttp().getRequest();
+    // console.log("In req\n",req);
+    
+    return requiredRoles.some((role) => req.user?.role?.includes(role));
   }
 }
