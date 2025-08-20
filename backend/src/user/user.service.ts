@@ -36,6 +36,7 @@ export class UserService {
       email,
       password,
       hashedPassword,
+      role,
       bio = null,
       avatar = null,
     } = data;
@@ -47,6 +48,7 @@ export class UserService {
         email,
         password,
         hashedPassword,
+        role,
         profile: {
           create: {
             bio,
