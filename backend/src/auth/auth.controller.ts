@@ -1,11 +1,8 @@
-import { Request, Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
-import { LoginDto } from '../dto/LoginDto';
+import { Body, Controller, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { RegisterDto } from '../dto/RegisterDto';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './passport/jwt-strategy/jwt-auth.guard';
-import { LocalAuthGuard } from './passport/local-strategy/local-auth.guard';
-import { User } from '@prisma/client';
 import { Public } from './guard/roles.decorator';
+import { LocalAuthGuard } from './passport/local-strategy/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -27,6 +24,7 @@ export class AuthController {
     return this.authService.login(request.user.username,request.user.password);
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('register')
   async register(@Body() userData: RegisterDto): Promise<object> {
