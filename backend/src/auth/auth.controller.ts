@@ -5,17 +5,20 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './passport/jwt-strategy/jwt-auth.guard';
 import { LocalAuthGuard } from './passport/local-strategy/local-auth.guard';
 import { User } from '@prisma/client';
+import { Public } from './guard/roles.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
   
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('check')
   async check(@Request() req){
     return req.user
    }
-
+  
+  @Public()
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
