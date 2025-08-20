@@ -8,44 +8,54 @@ import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { JwtAuthGuard } from 'src/auth/passport/jwt-strategy/jwt-auth.guard';
 import { JsonObject } from '@prisma/client/runtime/library';
 import { LocalAuthGuard } from 'src/auth/passport/local-strategy/local-auth.guard';
+import { Roles } from 'src/auth/guard/roles.decorator';
+import { Role } from 'src/auth/guard/role.enum';
+import { RolesGuard } from 'src/auth/guard/roles.guard';
 
 @Controller('api/user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
     
     //User
-    @UseGuards(JwtAuthGuard)
+
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(Role.User)
     @Get('hello')
     async staffGreet(@Request() req): Promise<{ user: any }> {
-        console.log(req);
+        // console.log(req);
         return {
         user: req.user, 
         };
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(Role.Admin)
     @Get()
     async listAllUser(): Promise<User[]> {
         return (this.userService.listAllUser());
     }
 
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(Role.Admin)
     @Get(':id')
     async listIndexUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
         return this.userService.listIndexUser(id);
     }
 
+    @UseGuards(JwtAuthGuard,RolesGuard)
     @Post()
     async createUser(@Body() userDto: RegisterDto): Promise<User> {
         return this.userService.createUser(userDto);
     }
 
+    @UseGuards(JwtAuthGuard,RolesGuard)
     @Put(':id')
     async updateUser(
         @Param('id', ParseIntPipe) id: number, @Body() updateDto: UserDto): Promise<{ msg: string }> {
         return this.userService.updateUser(id, updateDto);
     }
 
-
+    @UseGuards(JwtAuthGuard,RolesGuard)
     @Delete(':id')
     async deleteUser(@Param('id',ParseIntPipe) id:number): Promise<object>{
         const result = this.userService.deleteUser(id);
