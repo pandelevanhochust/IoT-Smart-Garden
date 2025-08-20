@@ -9,8 +9,9 @@ export class AuthService {
     constructor(private readonly userService: UserService,
                 private readonly jwtService: JwtService) {}
 
-    async validateUsernamePassword(username: string, pass: string ): Promise<boolean>{
+    async validateUsernamePassword(username: string, pass: string ): Promise<any>{
         const user = await this.userService.findUserbyUsername(username);
+        if(!user) throw new UnauthorizedException('Wrong username');
         const passwordMatch = await bcrypt.compare(pass, user.hashedPassword);
         if (!passwordMatch) throw new UnauthorizedException('Wrong password');
         const { hashedPassword, ...result } = user;
@@ -18,13 +19,10 @@ export class AuthService {
     }
 
     async login(username: string, pass: string) {
-        const user = await this.userService.findUserbyUsername(username);
-        if (!user) throw new UnauthorizedException('User not found');
 
-        const hashedpasswordMatch = await bcrypt.compare(pass,user.hashedPassword);
-        if(!(hashedpasswordMatch)){
-            throw new UnauthorizedException('Wrong password');
-        }
+        const user = await  this.validateUsernamePassword(username, pass);
+        if(!user) throw new UnauthorizedException('Username Password unmatched');
+
         const { password, ...result} = user;
         const token = await this.jwtService.signAsync(result);
 
@@ -35,6 +33,7 @@ export class AuthService {
             name: user.name,
             username: user.username,
             email: user.email,
+            role: user.role,
             token: token
         }
         };
