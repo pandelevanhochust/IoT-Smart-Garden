@@ -2,7 +2,10 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from "@
 import { Profile } from "@prisma/client";
 import { ProfileDto } from "src/dto/ProfileDto";
 import { UserService } from "./user.service";
+import { ApiBearerAuth } from "@nestjs/swagger";
 
+
+@ApiBearerAuth('JWT-auth')
 @Controller('api/profile')
 export class ProfileController {
     constructor(private readonly userService: UserService) {}
