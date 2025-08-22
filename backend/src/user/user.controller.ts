@@ -1,11 +1,19 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Request } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { Role } from 'src/auth/guard/role.enum';
-import { Roles } from 'src/auth/guard/roles.decorator';
+import { Roles } from 'src/decorator/roles.decorator';
 import { RegisterDto } from 'src/dto/RegisterDto';
 import { UserDto } from '../dto/user.dto';
 import { UserService } from './user.service';
 
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+
+@ApiBearerAuth('JWT-auth')
 @Controller('api/user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
@@ -14,6 +22,7 @@ export class UserController {
 
     @Roles(Role.User)
     @Get('hello')
+    @ApiResponse({ status: 200, description: 'Returns user info' })
     async staffGreet(@Request() req): Promise<{ user: any }> {
         // console.log(req);
         return {
@@ -33,17 +42,20 @@ export class UserController {
         return this.userService.listIndexUser(id);
     }
 
+    @Roles(Role.Admin)
     @Post()
     async createUser(@Body() userDto: RegisterDto): Promise<User> {
         return this.userService.createUser(userDto);
     }
 
+    @Roles(Role.Admin)
     @Put(':id')
     async updateUser(
         @Param('id', ParseIntPipe) id: number, @Body() updateDto: UserDto): Promise<{ msg: string }> {
         return this.userService.updateUser(id, updateDto);
     }
 
+    @Roles(Role.User)
     @Delete(':id')
     async deleteUser(@Param('id',ParseIntPipe) id:number): Promise<object>{
         const result = this.userService.deleteUser(id);
