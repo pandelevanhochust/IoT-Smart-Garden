@@ -8,16 +8,20 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = app.get(ConfigService);
   app.set('query parser', 'extended');  
-  
+  app.enableCors();
+
   console.log(app.getHttpServer().address());
 
   const swaggerConfig = new DocumentBuilder()
-      .setTitle('Nest Internship API')
+      .setTitle('My NestJS API')
       .setDescription('Auth, Users, Posts')
-      .setVersion('1.0.0')
+      .setVersion('1.1.0')
       .addBearerAuth(
-        { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'header' },
-        'JWT-auth', // name for @ApiBearerAuth()
+        { type: 'http', 
+          scheme: 'bearer', 
+          bearerFormat: 'JWT', 
+          in: 'header' },
+        'JWT-auth',
       )
       .build();
 
@@ -26,7 +30,7 @@ async function bootstrap() {
       jsonDocumentUrl: 'docs/json',
     });
 
-    const port = config.get<number>('PORT') ?? 3001;
+    const port = config.get<number>('PORT') ?? 3000;
 
     if (await app.listen(port)) console.log("Server starting");
     console.log(`Server running at http://localhost:${port}`);
