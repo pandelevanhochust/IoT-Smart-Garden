@@ -1,15 +1,16 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class PostDto {
+  @ApiProperty({ example: 'My Post Title' })
   @IsString()
-  @ApiProperty({ example: 'Getting Started with NestJS' })
   title: string;
 
+  @ApiProperty({ example: 'This is the content of the post.' })
   @IsString()
-  @ApiProperty({ example: 'NestJS is a progressive Node.js framework for building efficient and scalable server-side applications.' })
   content: string;
 
-  @IsInt()
-  userId: number;
+  @ApiPropertyOptional({ example: 1 })
+  @IsOptional()
+  authorId?: number;
 }

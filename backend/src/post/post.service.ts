@@ -7,13 +7,19 @@ export class PostService {
   constructor(private prisma: PrismaService) {}
 
   async createPost(data: PostDto): Promise<{ msg: string }> {
-    const post = await this.prisma.post.create({ data });
+    const post = await this.prisma.post.create({
+      data: {
+        title: data.title,
+        content: data.content,
+        user: { connect: { id: data.authorId } },
+      },
+    });
     return { msg: `Post "${post.title}" created for user ${post.userId}` };
   }
 
   async getAllPosts() {
     return this.prisma.post.findMany({
-      include: { user: true }, // optional
+      include: { user: true },
     });
   }
 

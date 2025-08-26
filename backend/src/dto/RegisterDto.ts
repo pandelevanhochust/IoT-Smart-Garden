@@ -1,38 +1,39 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class RegisterDto {
+  @ApiProperty({ example: 'John Doe' })
   @IsString()
-  @ApiProperty({ example: 'Johny Le' })
   name: string;
 
+  @ApiProperty({ example: 'johndoe' })
   @IsString()
-  @ApiProperty({ example: 'gosei' })
   username: string;
 
+  @ApiProperty({ example: 'john@example.com' })
   @IsEmail()
-  @ApiProperty({ example: 'takeru@example.com' })
   email: string;
 
+  @ApiProperty({ example: 'password123' })
   @IsString()
-  @ApiProperty({ example: 'thispass' })
   password: string;
 
+  @ApiPropertyOptional({ example: 'hashedpassword123' })
   @IsOptional()
   @IsString()
   hashedPassword: string;
 
-  @IsString()
   @ApiProperty({ example: 'admin' })
+  @IsString()
   role: string;
 
+  @ApiPropertyOptional({ example: 'A short bio' })
   @IsOptional()
   @IsString()
-  @ApiProperty({ example: 'Fullstack engineer from Hanoi' })
   bio?: string;
 
+  @ApiPropertyOptional({ example: 'https://example.com/avatar.png' })
   @IsOptional()
   @IsString()
-  @ApiProperty({ example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...' })
   avatar?: string;
 }

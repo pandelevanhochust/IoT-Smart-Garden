@@ -16,7 +16,6 @@ import { UserModule } from './user/user.module';
   imports: [      
     ConfigModule.forRoot({
       isGlobal: true,
-      ignoreEnvFile: true,
       envFilePath: '.env',
       validationSchema: Joi.object({
         PORT: Joi.number().default(3000),
@@ -45,7 +44,7 @@ import { UserModule } from './user/user.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer){
     consumer.apply(LoggerMiddleware)
-            .forRoutes({path:'api/user/*', method: RequestMethod.ALL});
+            .forRoutes({path:'api/user', method: RequestMethod.ALL});
             // .forRoutes(StaffController)
   }
 }
