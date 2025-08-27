@@ -1,4 +1,4 @@
-# NestJS Internship
+# IoT Smart Garden
 
 ## Dự án Backend khu vườn IoT thông mình 
 
