@@ -8,9 +8,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
-import { Public } from 'src/decorator/public.decorator';
-import { LoginDto } from 'src/dto/LoginDto';
-import { RegisterDto } from '../dto/RegisterDto';
+import { Public } from 'src/common/decorator/public.decorator';
+import { LoginDto } from 'src/dto/login.dto';
+import { RegisterDto } from '../dto/register.dto';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './passport/local-strategy/local-auth.guard';
 
@@ -32,7 +32,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async logIn(@Request() request): Promise<object> {
-    console.log('In controller\n', request.user);
+    // console.log('In controller\n', request.user);
     return this.authService.login(request.user.username, request.user.password);
   }
 

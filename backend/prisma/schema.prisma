@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   // output   = "../generated/prisma"
@@ -9,32 +8,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String  
-  username String @unique
-  email String  @unique
-  password String 
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  name           String?
+  password       String?
   hashedPassword String?
-  role String?
-  profile Profile?
-  post Post[] 
+  role           Role     @default(USER)
+  gardens        Garden[]
+  bio            String?
+  avatar         String?
 }
 
-model Profile {
-  id Int @id @default(autoincrement())
-  user User @relation(fields: [userId],references: [id])
-  userId Int @unique
-  bio String?
-  avatar String? //base64
+model Garden {
+  id         Int          @id @default(autoincrement())
+  name       String
+  ownerId    Int
+  owner      User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  vegetables Vegetable[]
+  sales      Sale[]
+  sensors    SensorData[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
-model Post {
-  id Int @id @default(autoincrement())
-  title String
-  content String
-  user User @relation(fields: [userId],references: [id])
-  userId Int
+model Vegetable {
+  id          Int     @id @default(autoincrement())
+  name        String
+  importedQty Int     @default(0)
+  soldQty     Int     @default(0)
+  gardenId    Int
+  garden      Garden  @relation(fields: [gardenId], references: [id], onDelete: Cascade)
+  price       Decimal @db.Decimal(14, 2)
+  sales       Sale[]
 }
 
+model Sale {
+  id          Int       @id @default(autoincrement())
+  gardenId    Int
+  garden      Garden    @relation(fields: [gardenId], references: [id], onDelete: Cascade)
+  vegetableId Int
+  vegetable   Vegetable @relation(fields: [vegetableId], references: [id], onDelete: Cascade)
+  quantity    Int
+  totalAmount Decimal   @db.Decimal(14, 2)
+  soldAt      DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+}
 
+model SensorData {
+  id          Int      @id @default(autoincrement())
+  gardenId    Int
+  garden      Garden   @relation(fields: [gardenId], references: [id], onDelete: Cascade)
+  type        String
+  value       Decimal  @db.Decimal(14, 2)
+  recordedAt  DateTime @default(now())
+}

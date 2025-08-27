@@ -1,14 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Role } from '@prisma/client';
+import { IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
 
 export class UserDto {
   @ApiProperty({ example: 'John Doe' })
   @IsString()
   name: string;
-
-  @ApiProperty({ example: 'johndoe' })
-  @IsString()
-  username: string;
 
   @ApiProperty({ example: 'john@example.com' })
   @IsEmail()
@@ -18,7 +15,22 @@ export class UserDto {
   @IsString()
   password: string;
 
-  @ApiProperty({ example: 'admin' })
+  @ApiPropertyOptional({ example: 'hashedpassword123' })
+  @IsOptional()
   @IsString()
-  role: string;
+  hashedPassword: string;
+
+  @ApiProperty({ example: 'ADMIN' })
+  @IsEnum(Role)
+  role: Role;
+
+  @ApiPropertyOptional({ example: 'A short bio' })
+  @IsOptional()
+  @IsString()
+  bio?: string;
+
+  @ApiPropertyOptional({ example: 'https://example.com/avatar.png' })
+  @IsOptional()
+  @IsString()
+  avatar?: string;
 }
