@@ -1,6 +1,8 @@
 # IoT Smart Garden
 
-## Dự án Backend khu vườn IoT thông mình 
+## Dự án Backend khu vườn IoT thông minh
+
+## Thiết bị IoT: ESP32 + cảm biến + MQTT
 
 ## Lệnh chạy
 
